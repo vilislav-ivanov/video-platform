@@ -7,17 +7,11 @@ import {
 import validateRequest from './middleware/validateRequest';
 import { createUserSchema } from './schema/user.schema';
 import { createSessionSchema } from './schema/session.schema';
+import { createProviderSchema } from './schema/provider.schema';
 import requireUser from './middleware/requireUser';
+import { createProviderHandler } from './controller/provider.controller';
 
 function connectRoutes(app: Express) {
-  app.get('/healthcheck', (req: Request, res: Response) => {
-    res.status(200).json({ msg: 'Hello World' });
-  });
-
-  app.get('/api/private', requireUser, (req: Request, res: Response) => {
-    res.send('Estou Aque');
-  });
-
   app.post('/api/users', validateRequest(createUserSchema), createUserHandle);
   app.post(
     '/api/sessions',
@@ -25,6 +19,13 @@ function connectRoutes(app: Express) {
     createSessionHandler
   );
   app.delete('/api/sessions', requireUser, invalidateSessionHandler);
+
+  app.post(
+    '/api/provider',
+    validateRequest(createProviderSchema),
+    requireUser,
+    createProviderHandler
+  );
 }
 
 export default connectRoutes;
