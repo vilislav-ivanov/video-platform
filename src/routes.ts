@@ -7,9 +7,16 @@ import {
 import validateRequest from './middleware/validateRequest';
 import { createUserSchema } from './schema/user.schema';
 import { createSessionSchema } from './schema/session.schema';
-import { createProviderSchema } from './schema/provider.schema';
+import { createOrEditProviderSchema } from './schema/provider.schema';
 import requireUser from './middleware/requireUser';
-import { createProviderHandler } from './controller/provider.controller';
+import requireOwner from './middleware/requireOwner';
+import {
+  createProviderHandler,
+  getAllProvidersHandler,
+  getProviderHandler,
+  editProviderHandler,
+  deleteProviderHandler,
+} from './controller/provider.controller';
 
 function connectRoutes(app: Express) {
   app.post('/api/users', validateRequest(createUserSchema), createUserHandle);
@@ -21,10 +28,23 @@ function connectRoutes(app: Express) {
   app.delete('/api/sessions', requireUser, invalidateSessionHandler);
 
   app.post(
-    '/api/provider',
-    validateRequest(createProviderSchema),
+    '/api/providers',
+    validateRequest(createOrEditProviderSchema),
     requireUser,
     createProviderHandler
+  );
+  app.get('/api/providers', getAllProvidersHandler);
+  app.get('/api/providers/:providerId', getProviderHandler);
+  app.put(
+    '/api/providers/:providerId',
+    validateRequest(createOrEditProviderSchema),
+    [requireUser, requireOwner],
+    editProviderHandler
+  );
+  app.delete(
+    '/api/providers/:providerId',
+    [requireUser, requireOwner],
+    deleteProviderHandler
   );
 }
 

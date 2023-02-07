@@ -5,7 +5,7 @@ function requireUser(req: Request, res: Response, next: NextFunction) {
   const user = get(req, 'user');
 
   if (!user) {
-    return res.sendStatus(403);
+    return res.status(403).send({ user: 'user is required.' });
   }
   return next();
 }

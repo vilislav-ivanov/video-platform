@@ -1,6 +1,6 @@
 import { object, string } from 'yup';
 
-export const createProviderSchema = object({
+export const createOrEditProviderSchema = object({
   body: object({
     info: string()
       .required('info is required')
