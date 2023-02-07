@@ -36,7 +36,7 @@ export async function getUser(email: string, password: string) {
     }
     return user;
   } catch (err: any) {
-    throw new ExecutionError(err.message);
+    throw err;
   }
 }
 
